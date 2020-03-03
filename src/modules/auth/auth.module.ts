@@ -8,6 +8,7 @@ import { UserStrategy } from './strategies/user.strategy';
 import { AuthController } from './auth.controller';
 import { BcryptService } from '../../base/bcrypt.service';
 import { UsersService } from '../users/users.service';
+import { MongodbService } from '../database/mongodb.service';
 
 @Module({
   controllers: [AuthController],
@@ -24,6 +25,7 @@ import { UsersService } from '../users/users.service';
     LocalStrategy,
     UserStrategy,
     BcryptService,
+    MongodbService
   ],
 })
 export class AuthModule {}

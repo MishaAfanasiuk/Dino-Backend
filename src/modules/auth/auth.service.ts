@@ -35,10 +35,10 @@ export class AuthService {
     };
   }
 
-  async register({ username, password, password_repeat }: RegisterDto) {
+  async register({ username: regUsername, password, password_repeat }: RegisterDto) {
     const db = await this.mongodbService.getDB();
     const collection = db.collection(USERS);
-    if (await collection.findOne({username})) {
+    if (await collection.findOne({username: regUsername})) {
       throw new HttpException('User name is already taken', HttpStatus.BAD_REQUEST)
     }
 
@@ -47,13 +47,17 @@ export class AuthService {
     }
 
     const { insertedId } = await collection.insertOne({
-      username, password: await this.bcryptService.hashPassword(password)
+      username: regUsername,
+      password: await this.bcryptService.hashPassword(password)
     });
 
-    const user = await collection.findOne({_id: insertedId});
-
+    const { username, _id } = await collection.findOne({_id: insertedId});
+    const payload = {
+      username,
+      _id
+    };
     return {
-      username: user.username,
+      username,
       access_token: this.jwtService.sign(payload),
     };
   }
