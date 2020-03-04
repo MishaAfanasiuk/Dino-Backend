@@ -8,8 +8,13 @@ export class MenuService {
 
   getMenu = async () => {
     const db = await this.mongodb.getDB();
-    const c = await db.collection(MENU).find().toArray();
-    console.log(c);
-    return c
+    return db.collection(MENU).find().toArray();
+  };
+
+  getMenuDiscounts = async () => {
+    const db = await this.mongodb.getDB();
+    const r = await db.collection(MENU).find({ hasDiscount: true }).toArray();
+    console.log(r);
+    return r;
   }
 }

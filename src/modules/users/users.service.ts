@@ -17,20 +17,14 @@ export class UsersService {
   getUserWithLoginCredits = async (username: string) => {
     const db = await this.mongodbService.getDB();
     return  db.collection(USERS).findOne({username})
-  }
+  };
 
   getUserAchievements = async ({ username }: UserDto) => {
     const db = await this.mongodbService.getDB();
-    try {
-      const r = await db.collection(USERS).aggregate([
+    return db.collection(USERS).aggregate([
         {
           $match: { username },
         },
-        // {
-        //   $project: {
-        //     username: 1,
-        //   }
-        // },
         {
           $unwind: '$achievements'
         },
@@ -46,17 +40,24 @@ export class UsersService {
           $unwind: '$achievements.info'
         },
         {
+          $set: {
+            'achievements.info.progress': '$achievements.progress'
+          }
+        },
+        {
+          $set: {
+            'achievements': '$achievements.info'
+          }
+        },
+        {
           $group: {
             "_id": "$_id",
-            "achievements": {
+            username: {'$first': '$username'},
+            achievements: {
               "$push": "$achievements"
             },
           }
         }
       ]).toArray();
-      return r;
-    } catch (e) {
-      console.log(e)
-    }
   }
 }

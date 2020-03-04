@@ -9,4 +9,9 @@ export class MenuController {
   getMenu(): Promise<any> {
     return this.menuService.getMenu();
   }
+
+  @Get('/discounts')
+  getMenuDiscounts(): Promise<any> {
+    return this.menuService.getMenuDiscounts();
+  }
 }
