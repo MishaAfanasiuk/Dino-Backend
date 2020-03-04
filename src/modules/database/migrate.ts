@@ -10,6 +10,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true });
 
 const migrate = async () => {
   const db = (await client.connect()).db(process.env.DB_NAME);
+  await db.dropCollection(MENU);
+  await db.dropCollection(LOCATIONS);
+
   await db.collection(MENU).insertMany(menuMock);
   await db.collection(LOCATIONS).insertMany(locationsMock);
   process.exit(0);
