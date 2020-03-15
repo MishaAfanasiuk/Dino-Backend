@@ -1,21 +1,32 @@
-import { MongoClient} from 'mongodb';
 import * as dotenv from 'dotenv';
-dotenv.config({path: '.env'});
+import * as mongoose from 'mongoose';
+import { newsMock } from './mocks/newsMock';
+import { News, newsModel } from './schemas/news';
+import { menuModel } from './schemas/menu';
 import { menuMock } from './mocks/menuMock';
-import { locationsMock } from './mocks/locationsMock';
-import { LOCATIONS, MENU } from './collections';
 
-const uri = `mongodb+srv://dno:${process.env.DB_PASSWORD}@dino-6io1u.mongodb.net/test?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true });
+dotenv.config({path: '.env'});
 
-const migrate = async () => {
-  const db = (await client.connect()).db(process.env.DB_NAME);
-  await db.dropCollection(MENU);
-  await db.dropCollection(LOCATIONS);
+mongoose.connect(`mongodb+srv://dno:${process.env.DB_PASSWORD}@dino-6io1u.mongodb.net/test?retryWrites=true&w=majority`, {
+  dbName: process.env.DB_NAME
+});
+const db = mongoose.connection;
 
-  await db.collection(MENU).insertMany(menuMock);
-  await db.collection(LOCATIONS).insertMany(locationsMock);
+db.once('open', async () => {
+
+  // news
+  await newsModel.deleteMany({});
+  const news = newsMock.map((mock) => {
+    return new newsModel(mock);
+  });
+  await newsModel.insertMany(news);
+
+  // menu
+  await menuModel.deleteMany({});
+  const menu = menuMock.map((mock) => {
+    return new menuModel(mock)
+  })
+  await menuModel.insertMany(menu);
+
   process.exit(0);
-};
-
-migrate();
+});

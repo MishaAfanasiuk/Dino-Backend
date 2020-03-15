@@ -1,20 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { MENU } from '../database/collections';
-import { MongodbService } from '../database/mongodb.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from "mongoose";
+import { Menu } from '../database/schemas/menu';
 
 @Injectable()
 export class MenuService {
-  constructor(private mongodb: MongodbService) {}
+  constructor(
+    @InjectModel('Menu') private menuModel: Model<Menu>
+  ) {}
 
   getMenu = async () => {
-    const db = await this.mongodb.getDB();
-    return db.collection(MENU).find().toArray();
-  };
+    const menu = await this.menuModel.find().exec();
+    return menu.reduce((acc, menuItem) => {
+      if (!acc[menuItem.type]) {
+        acc[menuItem.type] = []
+      }
 
-  getMenuDiscounts = async () => {
-    const db = await this.mongodb.getDB();
-    const r = await db.collection(MENU).find({ hasDiscount: true }).toArray();
-    console.log(r);
-    return r;
-  }
+      acc[menuItem.type].push(menuItem);
+      return acc
+    }, {});
+  };
 }

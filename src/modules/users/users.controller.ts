@@ -5,12 +5,11 @@ import { UsersService } from './users.service';
 
 @Controller('user')
 export class UsersController {
-  constructor(private usersService: UsersService) {
+  constructor(private usersService: UsersService) {}
 
-  }
   @UseGuards(AuthGuard('user'))
   @Get('')
-  getUserAchievements(@Request() { user }) {
-    return this.usersService.getUserAchievements(user);
+  getUser(@Request() { user }) {
+    return this.usersService.findOne(user);
   }
 }
