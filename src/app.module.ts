@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { MenuModule } from './modules/menu/menu.module';
 import { MongodbService } from './modules/database/mongodb.service';
 import { AuthModule } from './modules/auth/auth.module';
-import { LocationModule } from './modules/location/location.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NewsModule } from './modules/news/news.module';
 import { EventsModule } from './modules/events/events.module';
@@ -17,7 +16,6 @@ import { EventsModule } from './modules/events/events.module';
     EventsModule,
     AuthModule,
     MenuModule,
-    LocationModule,
     NewsModule
   ],
   controllers: [AppController],
