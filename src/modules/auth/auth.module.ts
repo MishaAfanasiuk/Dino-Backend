@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalStrategy } from './strategies/local.strategy';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UserStrategy } from './strategies/user.strategy';
 import { AuthController } from './auth.controller';
 import { BcryptService } from '../../base/bcrypt.service';
-import { UsersService } from '../users/users.service';
-import { MongodbService } from '../database/mongodb.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { userSchemaProvider } from '../database/schemas/user';
 
 @Module({
   controllers: [AuthController],
   imports: [
+    MongooseModule.forFeature([userSchemaProvider]),
     UsersModule,
     PassportModule,
     JwtModule.register({
@@ -22,10 +22,8 @@ import { MongodbService } from '../database/mongodb.service';
   ],
   providers: [
     AuthService,
-    LocalStrategy,
     UserStrategy,
     BcryptService,
-    MongodbService
   ],
 })
 export class AuthModule {}

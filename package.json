@@ -31,6 +31,7 @@
     "@types/mongodb": "^3.3.16",
     "@types/passport": "^1.0.2",
     "bcrypt": "^4.0.0",
+    "class-transformer": "^0.2.3",
     "class-validator": "^0.11.0",
     "dotenv": "^8.2.0",
     "mo": "^1.7.3",

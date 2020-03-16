@@ -17,19 +17,19 @@ export const NewsSchema = new mongoose.Schema({
   type: String,
   eventId: ObjectId,
   createdAt: Date
-});
+}, {versionKey: false});
 
 export const newsSchemaProvider = {name: 'News', schema: NewsSchema};
 
 export const newsModel = mongoose.model('News', NewsSchema);
 
 export interface News extends Document {
-  name: String,
-  description: String | null,
-  extraDescription: String | null,
-  imageSrc: String,
+  name: string,
+  description: string | null,
+  extraDescription: string | null,
+  imageSrc: string,
   date: Date,
-  type: String,
+  type: string,
   eventId: ObjectId,
   createdAt: Date
 }

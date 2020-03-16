@@ -10,16 +10,16 @@ export const EventSchema = new mongoose.Schema({
   imageSrc: String,
   date: Date,
   createdAt: Date
-});
+}, {versionKey: false});
 
 export const eventSchemaProvider = {name: 'Event', schema: EventSchema};
 
 export const eventModel = mongoose.model('Event', EventSchema);
 
 export interface Event extends Document {
-  name: String,
-  description: String | null,
-  imageSrc: String,
+  name: string,
+  description: string | null,
+  imageSrc: string,
   date: Date,
   createdAt: Date
 }

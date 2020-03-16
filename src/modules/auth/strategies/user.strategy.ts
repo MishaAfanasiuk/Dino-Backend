@@ -16,7 +16,7 @@ export class UserStrategy extends PassportStrategy(Strategy, 'user') {
     });
   }
 
-  validate({ username, id }: UserJwtDto) {
-    return this.userService.findOne({username, id});
+  validate({ email, id }: UserJwtDto) {
+    return this.userService.findOne({email, id});
   }
 }

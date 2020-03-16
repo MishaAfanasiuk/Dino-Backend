@@ -1,63 +1,74 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptService } from '../../base/bcrypt.service';
 import { RegisterDto } from './dto/register.dto';
-import { MongodbService } from '../database/mongodb.service';
-import { USERS } from '../database/collections';
+import { LoginDto } from './dto/login.dto';
+import { User } from '../database/schemas/user';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly bcryptService: BcryptService,
-    private readonly jwtService: JwtService,
-    private readonly mongodbService: MongodbService,
+    private readonly jwtService: JwtService
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any | null> {
-    const user = await this.usersService.getUserWithLoginCredits(username);
+  async validateUser({ email, password }: LoginDto): Promise<User> {
+    const { password: userPassword, ...user } =
+      await this.usersService.getUserWithLoginCredits(email);
+
     const isPassCorrect = (
-      user && await this.bcryptService.compare(pass, user.password)
+      user && await this.bcryptService.compare(password, userPassword)
     );
 
-    return isPassCorrect ? user : null;
+    if (!isPassCorrect) {
+      throw new UnauthorizedException()
+    }
+
+    return user;
   }
 
-  async login({ password, ...user }: any) {
+  async login(loginPayload: LoginDto) {
+    const user = await this.validateUser(loginPayload);
     const payload = {
-      username: user.username,
-      id: user.id,
+      email: user.email,
+      _id: user.id,
     };
+
     return {
       ...user,
       access_token: this.jwtService.sign(payload),
     };
   }
 
-  async register({ username: regUsername, password, password_repeat }: RegisterDto) {
-    const db = await this.mongodbService.getDB();
-    const collection = db.collection(USERS);
-    if (await collection.findOne({username: regUsername})) {
+  async register(user: RegisterDto) {
+    const { email, password, passwordRepeat, phone, firstName, lastName } = user;
+    const usersService = this.usersService;
+
+    if (await usersService.findOne({email})) {
       throw new HttpException('User name is already taken', HttpStatus.BAD_REQUEST)
     }
 
-    if (password !== password_repeat) {
+    if (password !== passwordRepeat) {
       throw new HttpException('Password and password confirm are not the same', HttpStatus.BAD_REQUEST)
     }
 
-    const { insertedId } = await collection.insertOne({
-      username: regUsername,
+    const createdUser = await usersService.insert({
+      email,
+      firstName,
+      lastName,
+      phone,
       password: await this.bcryptService.hashPassword(password)
     });
 
-    const { username, _id } = await collection.findOne({_id: insertedId});
     const payload = {
-      username,
-      _id
+      email,
+      _id: createdUser._id
     };
+
     return {
-      username,
+      ...createdUser,
       access_token: this.jwtService.sign(payload),
     };
   }
