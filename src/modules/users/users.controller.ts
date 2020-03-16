@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
-import { UserResponse } from './apiResponses';
+import { UserResponse } from './dto/apiResponses';
 
 @Controller('user')
 export class UsersController {

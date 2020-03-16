@@ -3,12 +3,11 @@ import { MongodbService } from '../database/mongodb.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from "mongoose";
 import { User } from '../database/schemas/user';
-import { InsertDto } from './users.db.dto';
+import { InsertDto } from './dto/users.db.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private mongodbService: MongodbService,
     @InjectModel('User') private userModel: Model<User>
   ) {}
 
