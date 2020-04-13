@@ -1,9 +1,8 @@
-import { News } from '../schemas/news';
 import { Types} from 'mongoose';
 
 export const newsMock = [
   {
-    imageSrc: '',
+    imageSrc: 'events/jazz-band.jpg',
     type: 'event',
     eventId: new Types.ObjectId(),
   }
