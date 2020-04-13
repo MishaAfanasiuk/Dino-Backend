@@ -10,8 +10,11 @@ export const UserSchema = new mongoose.Schema({
     select: false
   },
   phone: String,
-  coins: Number
-});
+  coins: {
+    type: Number,
+    default: 0
+  }
+}, {versionKey: false});
 
 export const userSchemaProvider = {name: 'User', schema: UserSchema};
 

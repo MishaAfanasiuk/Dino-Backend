@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { MongodbService } from '../database/mongodb.service';
-import { ACHIEVEMENTS, USERS } from '../database/collections';
-import { UserDto } from '../../dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from "mongoose";
 import { User } from '../database/schemas/user';
+import { InsertDto } from './dto/users.db.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private mongodbService: MongodbService,
     @InjectModel('User') private userModel: Model<User>
   ) {}
 
@@ -17,7 +15,25 @@ export class UsersService {
     return this.userModel.findOne(findOptions).exec();
   };
 
-  getUserWithLoginCredits = async (username: string) => {
-    return this.userModel.findOne({username}, {password: 1}).exec()
+  getUserWithLoginCredits = async (email: string) => {
+    const user = await this.userModel.findOne({email})
+      .select('+password')
+      .exec();
+    return user.toObject()
+  };
+
+  insert = async (user: InsertDto) => {
+    const createdUser = (await this.userModel.create(user)).toObject();
+    delete createdUser.password;
+    return createdUser
+  };
+
+  remove = async (_id: string) => {
+    await this.userModel.deleteOne({_id});
+    return
+  };
+
+  findById = (id: string) => {
+    return this.userModel.findById(id).exec();
   };
 }

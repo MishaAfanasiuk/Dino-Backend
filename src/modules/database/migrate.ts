@@ -25,7 +25,7 @@ db.once('open', async () => {
   await menuModel.deleteMany({});
   const menu = menuMock.map((mock) => {
     return new menuModel(mock)
-  })
+  });
   await menuModel.insertMany(menu);
 
   process.exit(0);

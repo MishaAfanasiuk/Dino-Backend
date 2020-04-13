@@ -8,7 +8,7 @@ export const MenuSchema = new mongoose.Schema({
   imageSrc: String,
   weight: Number,
   ingredients: [String]
-});
+}, {versionKey: false});
 
 export const menuSchemaProvider = {name: 'Menu', schema: MenuSchema};
 
