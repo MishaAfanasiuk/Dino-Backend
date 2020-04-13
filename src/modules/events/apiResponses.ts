@@ -11,7 +11,10 @@ export class EventResponse {
   imageSrc: string;
 
   @ApiProperty()
-  date: Date;
+  startDate: Date;
+
+  @ApiProperty()
+  endDate: Date;
 
   @ApiProperty()
   createdAt: Date

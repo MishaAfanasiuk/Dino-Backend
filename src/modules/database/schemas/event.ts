@@ -8,7 +8,8 @@ export const EventSchema = new mongoose.Schema({
     default: null
   },
   imageSrc: String,
-  date: Date,
+  startDate: Date,
+  endDate: Date,
   createdAt: Date
 }, {versionKey: false});
 
@@ -20,6 +21,7 @@ export interface Event extends Document {
   name: string,
   description: string | null,
   imageSrc: string,
-  date: Date,
+  startDate: Date,
+  endDate: Date,
   createdAt: Date
 }
