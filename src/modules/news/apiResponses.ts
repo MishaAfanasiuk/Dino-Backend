@@ -5,9 +5,6 @@ export class NewsResponse {
   _id: string;
 
   @ApiProperty()
-  name: string;
-
-  @ApiProperty()
   imageSrc: string;
 
   @ApiProperty()
