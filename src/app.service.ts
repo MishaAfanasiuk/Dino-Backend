@@ -6,6 +6,5 @@ dotenv.config({path: '.env'});
 @Injectable()
 export class AppService {
   constructor(private mongodb: MongodbService) {
-    mongodb.initDb();
   };
 }

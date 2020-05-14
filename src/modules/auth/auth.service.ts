@@ -15,18 +15,22 @@ export class AuthService {
   ) {}
 
   async validateUser({ email, password }: LoginDto): Promise<User> {
-    const { password: userPassword, ...user } =
-      await this.usersService.getUserWithLoginCredits(email);
+    const user = await this.usersService.getUserWithLoginCredits(email);
 
+    if (!user) {
+      throw new UnauthorizedException()
+    }
+
+    const { password: userPassword, ...clearUser} = user;
     const isPassCorrect = (
-      user && await this.bcryptService.compare(password, userPassword)
+      await this.bcryptService.compare(password, userPassword)
     );
 
     if (!isPassCorrect) {
       throw new UnauthorizedException()
     }
 
-    return user;
+    return clearUser;
   }
 
   async login(loginPayload: LoginDto) {

@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from "mongoose";
 import { User } from '../database/schemas/user';
 import { InsertDto } from './dto/users.db.dto';
+import { UpdateDto } from './dto/update.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,13 +20,17 @@ export class UsersService {
     const user = await this.userModel.findOne({email})
       .select('+password')
       .exec();
-    return user.toObject()
+    return user?.toObject()
   };
 
   insert = async (user: InsertDto) => {
-    const createdUser = (await this.userModel.create(user)).toObject();
+    const createdUser = (await this.userModel.create(user))?.toObject();
     delete createdUser.password;
     return createdUser
+  };
+
+  update = (id, userDate: UpdateDto) => {
+    this.userModel.updateOne({_id: id}, userDate)
   };
 
   remove = async (_id: string) => {

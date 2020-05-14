@@ -12,7 +12,9 @@ import { DiscountsModule } from './modules/discounts/discounts.module';
 @Module({
   imports: [
     MongooseModule.forRoot(`mongodb+srv://dno:${process.env.DB_PASSWORD}@dino-6io1u.mongodb.net/test?retryWrites=true&w=majority`, {
-      dbName: process.env.DB_NAME
+      dbName: process.env.DB_NAME,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
     }),
     EventsModule,
     AuthModule,

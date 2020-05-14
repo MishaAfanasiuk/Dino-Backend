@@ -5,13 +5,13 @@ import { join } from 'path';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3005;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     {
-      logger: false
+      logger: ['error', 'warn', 'debug', 'verbose', 'log']
     }
   );
   app.enableCors();
