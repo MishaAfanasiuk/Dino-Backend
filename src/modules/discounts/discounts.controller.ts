@@ -16,7 +16,7 @@ export class DiscountsController {
   @ApiOkResponse({type: Discount})
   @Get(':id')
   getDiscount(@Param() params) {
-    this.discountsService.getDiscountById(params.id)
+    return this.discountsService.getDiscountById(params.id)
   }
 
 }
