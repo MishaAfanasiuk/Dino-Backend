@@ -29,8 +29,9 @@ export class UsersService {
     return createdUser
   };
 
-  update = (id, userDate: UpdateDto) => {
-    this.userModel.updateOne({_id: id}, userDate)
+  update = async (id, userDate: UpdateDto) => {
+    await this.userModel.updateOne({_id: id}, userDate);
+    return
   };
 
   remove = async (_id: string) => {
