@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -20,7 +20,7 @@ export class UsersController {
 
   @Put(':id')
   @ApiOkResponse()
-  updateUser(@Param() params, body: UpdateDto) {
+  updateUser(@Param() params, @Body() body: UpdateDto) {
     return this.usersService.update(params.id, body)
   }
 
