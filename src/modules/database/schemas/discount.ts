@@ -5,7 +5,7 @@ export const DiscountSchema = new mongoose.Schema({
   startDate: Date,
   endDate: Date,
   title: String,
-  descriptions: String,
+  description: String,
   imageSrc: String,
   posterImageSrc: String,
 }, {versionKey: false});
@@ -18,7 +18,7 @@ export interface Discount extends Document {
   startDate: Date,
   endDate: Date,
   title: string,
-  descriptions: string,
+  description: string,
   imageSrc: string,
   posterImageSrc: string,
 }
