@@ -8,7 +8,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { NewsModule } from './modules/news/news.module';
 import { EventsModule } from './modules/events/events.module';
 import { DiscountsModule } from './modules/discounts/discounts.module';
-
 @Module({
   imports: [
     MongooseModule.forRoot(`mongodb+srv://dno:${process.env.DB_PASSWORD}@dino-6io1u.mongodb.net/test?retryWrites=true&w=majority`, {
@@ -20,7 +19,7 @@ import { DiscountsModule } from './modules/discounts/discounts.module';
     AuthModule,
     MenuModule,
     NewsModule,
-    DiscountsModule,
+    DiscountsModule
   ],
   controllers: [AppController],
   providers: [AppService, MongodbService],

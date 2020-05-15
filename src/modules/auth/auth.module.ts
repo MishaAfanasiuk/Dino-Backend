@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
@@ -12,8 +12,8 @@ import { userSchemaProvider } from '../database/schemas/user';
 @Module({
   controllers: [AuthController],
   imports: [
+    forwardRef(() => UsersModule),
     MongooseModule.forFeature([userSchemaProvider]),
-    UsersModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_KEY,
@@ -25,5 +25,6 @@ import { userSchemaProvider } from '../database/schemas/user';
     UserStrategy,
     BcryptService,
   ],
+  exports: [AuthService]
 })
 export class AuthModule {}

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptService } from '../../base/bcrypt.service';
@@ -9,6 +9,7 @@ import { User } from '../database/schemas/user';
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly bcryptService: BcryptService,
     private readonly jwtService: JwtService
@@ -75,5 +76,9 @@ export class AuthService {
       ...createdUser,
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  sign = (payload) => {
+    return this.jwtService.sign(payload);
   }
 }

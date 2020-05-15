@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { MongodbService } from '../database/mongodb.service';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from "mongoose";
 import { User } from '../database/schemas/user';
 import { InsertDto } from './dto/users.db.dto';
 import { UpdateDto } from './dto/update.dto';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel('User') private userModel: Model<User>
-  ) {}
+    @InjectModel('User') private userModel: Model<User>,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService
+) {}
 
   findOne = async (findOptions) => {
     return this.userModel.findOne(findOptions).exec();
@@ -31,7 +33,9 @@ export class UsersService {
 
   update = async (id, userDate: UpdateDto) => {
     await this.userModel.updateOne({_id: id}, userDate);
-    return
+    const user = await this.userModel.findById(id).exec();
+    const access_token = this.authService.sign({_id: id, email: user.email });
+    return {access_token, ...user}
   };
 
   remove = async (_id: string) => {
