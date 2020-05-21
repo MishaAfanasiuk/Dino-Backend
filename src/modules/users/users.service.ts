@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from "mongoose";
 import { User } from '../database/schemas/user';
@@ -45,5 +45,30 @@ export class UsersService {
 
   findById = (id: string) => {
     return this.userModel.findById(id).exec();
+  };
+
+  getUserCoins = async (id: string) => {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new HttpException('User not found', 404)
+    }
+    return { coins: user.coins, userId: id};
+  };
+
+  changeCoins = async (id: string, coinsToChange: number) => {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new HttpException('User not found', 404)
+    }
+
+    const coins = user.coins;
+
+    if (coinsToChange < 0 && (coinsToChange + coins) < 0) {
+      throw new HttpException('Wrong coins amount', 422)
+    }
+
+    return this.userModel.updateOne({_id: id}, {
+      $inc: {coins: coinsToChange}
+    })
   };
 }

@@ -21,6 +21,10 @@ async function bootstrap() {
     prefix: '/assets/',
   });
 
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.setViewEngine('hbs')
+
   const options = new DocumentBuilder()
     .setTitle('Dino api')
     .setDescription('The dino restaurant API description')

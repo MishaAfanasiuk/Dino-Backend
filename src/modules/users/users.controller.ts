@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Render, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { UserResponse } from './dto/apiResponses';
 import { UpdateDto } from './dto/update.dto';
+import { CoinsUpdateDto } from './dto/coinsUpdate.dto';
 
 @Controller('user')
 export class UsersController {
@@ -28,5 +29,19 @@ export class UsersController {
   @Delete(':id')
   removeUser(@Param() params) {
     return this.usersService.remove(params.id);
+  }
+
+  @Render('coinsPage')
+  @ApiOkResponse({type: 'number'})
+  @Get(':id/coins/')
+  getCoins(@Param() params){
+    return this.usersService.getUserCoins(params.id)
+  }
+
+
+  @ApiOkResponse()
+  @Put(':id/coins/')
+  changeCoins(@Param() params, @Body() body: CoinsUpdateDto) {
+   return this.usersService.changeCoins(params.id, body.coins)
   }
 }

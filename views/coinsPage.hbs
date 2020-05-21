@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<title>Simple Sign up from</title>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+        integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      display: flex;
+      justify-content: center;
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 15px;
+    }
+
+    body {
+      width: 100%;
+    }
+
+    form {
+      border: 5px solid #f1f1f1;
+    }
+
+    input[type=text], input[type=password] {
+      width: 100%;
+      padding: 16px 8px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .icon {
+      font-size: 110px;
+      display: flex;
+      justify-content: center;
+      color: #4286f4;
+    }
+
+    button {
+      background-color: #4286f4;
+      color: white;
+      padding: 14px 0;
+      margin: 10px 0;
+      border: none;
+      cursor: grab;
+      width: 48%;
+    }
+
+    h1 {
+      text-align: center;
+      fone-size: 18;
+    }
+
+    label {
+      text-align: center;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    .formcontainer {
+      width: 50%;
+      text-align: center;
+      margin: 24px 50px 12px;
+    }
+
+    .container-main {
+      display: flex;
+    }
+
+    @media screen and (max-width: 600px) {
+      .formcontainer {
+        width: 100%;
+        margin: 0px;
+        padding: 10px;
+      }
+
+      form {
+        width: 100%;
+      }
+
+      .container-main {
+        display: block;
+      }
+    }
+
+    .container {
+      padding: 16px 0;
+      text-align: left;
+    }
+
+    span.psw {
+      float: right;
+      padding-top: 0;
+      padding-right: 15px;
+    }
+
+    /* Change styles for span on extra small screens */
+    @media screen and (max-width: 300px) {
+      span.psw {
+        display: block;
+        float: none;
+      }
+  </style>
+</head>
+<body>
+<form onsubmit="return false">
+  <h1>User coins available {{coins}}</h1>
+  <div class="icon">
+    <i class="fas fa-user-circle"></i>
+  </div>
+
+  <div class="container-main">
+    <div class="formcontainer">
+      <div class="container">
+        <label for="substract"><strong>Coins to subtract</strong></label>
+        <input type="text" id="subtract" placeholder="Subtract not less than {{coins}}" name="subtract">
+        <button type="submit" onclick="subtractCoins()"><strong>Subtract</strong></button>
+      </div>
+    </div>
+
+    <div class="formcontainer">
+      <div class="container">
+        <label for="add"><strong>Coins to add</strong></label>
+        <input type="text" id="add" placeholder="Enter coins to add" name="add">
+        <button type="submit" onclick="addCoins()"><strong>Add</strong></button>
+      </div>
+    </div>
+  </div>
+</form>
+</body>
+
+<script>
+  const changeCoins = async (coins, successText) => {
+    const handleErrors = (response) => {
+      console.log(response);
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response;
+    };
+
+    const data = { coins };
+    fetch('https://dino-backend.herokuapp.com/user/{{userId}}/coins', {
+      //fetch('http://localhost:3005/user/{{userId}}/coins', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(handleErrors)
+      .then(() => {
+        alert(successText);
+        location.reload(true);
+      })
+      .catch(e => alert(e.toString()));
+  };
+
+  const addCoins = () => {
+    try {
+      const coins = document.getElementById('add').value;
+      const coinsNumber = parseInt(coins);
+      if (coinsNumber < 0) {
+        throw new Error('Coins can\'t be < 0');
+      }
+      changeCoins(coinsNumber, 'Coins added');
+    } catch (e) {
+      alert(e.toString());
+    }
+  };
+
+  const subtractCoins = () => {
+    try {
+      const coins = document.getElementById('subtract').value;
+      const coinsNumber = parseInt(coins) * -1;
+      const userCoins = parseInt('{{coins}}');
+      if (userCoins + coinsNumber < 0) {
+        throw new Error(`Coins can\'t be less than user coins ${userCoins}`);
+      }
+
+      if (coinsNumber > 0) {
+        throw new Error('Coins can\'t be < 0');
+      }
+      changeCoins(coinsNumber, 'Coins subtracted');
+    } catch (e) {
+      alert(e.toString());
+    }
+  };
+</script>
+</html>
